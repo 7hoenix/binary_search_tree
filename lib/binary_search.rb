@@ -1,50 +1,62 @@
-class BinarySearch
-  attr_reader :head
-
-  def push(data)
-    if head && head > data
-      @left = left.push(data)
-    elsif head && head < data
-      @right = right.push(data)
-    else
-      @head = Node.new(data)
-    end
-  end
-
-
-
-end
-
 class Node
-  attr_reader :value, :left, :right
+  attr_reader :value, :left, :right, :head
 
   def initialize(value)
     @value = value
   end
 
   def push(data)
-    if value > data
-      check_left(data)
-    elsif value < data
-      check_right(data)
-    else
-      @head = Node.new(data)
-    end
-  end
-
-  def check_left(data)
-    if left
+    if left? && data < self.value
       left.push(data)
-    else
+    elsif data < self.value
       @left = Node.new(data)
     end
-  end
 
-  def check_right(data)
-    if right
+    if right? && data > self.value
       right.push(data)
-    else
+    elsif data > self.value
       @right = Node.new(data)
     end
+
+    if !left? && !right?
+      @head = Node.new(data)
+    end
+
   end
+
+  def left?
+    left
+  end
+
+  def right?
+    right
+  end
+
+end
+
+class BinarySearch < Node
+  attr_reader :head
+
+  def initialize
+
+  end
+
+  def load_file(file_name)
+    @input = File.read(file_name)
+  end
+
+  def load_tree(input)
+    datum = input.split('\n')
+    datum.each do |data|
+      push(data.to_i)
+     end
+  end
+
+end
+
+if __FILE__ == $0
+   tree = BinarySearch.new
+   input = tree.load_file(ARGV[0])
+   tree.load_tree(input)
+   puts tree.head.value
 end
